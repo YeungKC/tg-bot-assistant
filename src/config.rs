@@ -4,6 +4,7 @@ use url::Url;
 pub fn get_webhook_url_from_env() -> Option<Url> {
     env::var("ZEABUR_WEB_URL")
         .or_else(|_| env::var("WEBHOOK_URL"))
+        .or_else(|_| env::var("RENDER_EXTERNAL_URL"))
         .ok()
         .and_then(|url| Url::parse(&url).ok())
 }
