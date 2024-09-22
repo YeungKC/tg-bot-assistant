@@ -1,8 +1,11 @@
-use teloxide::{prelude::Requester, types::Message};
+use teloxide::{dptree, prelude::Requester, types::Message};
 
-use crate::types::{BotType, HandlerResult};
+use crate::types::{BotType, HandlerResult, HandlerType};
 
-pub async fn message_handler(bot: BotType, msg: Message) -> HandlerResult {
+pub fn message_handler() -> HandlerType {
+    dptree::endpoint(handler)
+}
+async fn handler(bot: BotType, msg: Message) -> HandlerResult {
     bot.send_message(msg.chat.id, "Pong").await?;
     Ok(())
 }

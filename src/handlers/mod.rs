@@ -9,15 +9,22 @@ use teloxide::{
     prelude::Dispatcher,
     types::Update,
 };
+use tracing::trace;
 
 use crate::types::{BotType, BoxedError};
 
 pub fn create_dispatcher(bot: BotType) -> Dispatcher<BotType, BoxedError, DefaultKey> {
     Dispatcher::builder(
         bot,
-        Update::filter_message()
-            .branch(command_handler())
-            .branch(dptree::endpoint(message_handler)),
+        dptree::entry()
+            .inspect(|update: Update| {
+                trace!("Update: {:?}", update);
+            })
+            .branch(
+                Update::filter_message()
+                    .branch(command_handler())
+                    .branch(message_handler()),
+            ),
     )
     .enable_ctrlc_handler()
     .build()
